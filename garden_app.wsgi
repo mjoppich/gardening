@@ -5,7 +5,7 @@ import sys, os
 
 logging.basicConfig(stream=sys.stderr)
 
-sys.path.insert(0, '/var/www/html/garden/')
+sys.path.insert(0, '/var/www/html/gardening/')
 os.chdir(sys.path[0])
 
 from garden_app import app as application
