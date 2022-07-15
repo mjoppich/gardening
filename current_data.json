@@ -1,0 +1,1 @@
+{"alarm_times_utc": [[7, 0], [17, 0]], "initial_start": "2022/7/15 10:09:32", "gpio_state": "OFF", "time_to_alarm": ["-3:09:35", "06:50:25"], "times_to_alarm": [-11375, 24625], "current_time_local": "12:09:35", "temp": "24.91C", "timezone": 2, "last_timer": "12:09:35", "humidity": "40.16%", "current_time_utc": "10:09:35", "airpressure": "953.55hPa", "soilmoisture": 100}

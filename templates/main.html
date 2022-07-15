@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>GartenApp v1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+	<div class="container .col-md-1 justify-content-center" style="padding: 100px; margin: 50px">
+
+
+<div class="card" style="width: 500px;  margin: 50px;">
+    <div class="card-body">
+    <h5 class="card-title">GartenApp v1.0</h5>
+    <p class="card-text">GartenApp</p>
+    </div>
+</div>
+
+<div class="card" style="width: 500px; margin: 50px;">
+    <div class="card-body">
+    <h5 class="card-title">Weather</h5>
+    <p class="card-text">
+
+    <ul class="list-group list-group-flush">
+    <li class="list-group-item">Temperature: {{data["temp"]}}</li>
+    <li class="list-group-item">Humidity: {{data["humidity"]}}</li>
+    <li class="list-group-item">Pressure: {{data["airpressure"]}}</li>
+    <li class="list-group-item">Soil Moisture: {{data["soilmoisture"]}}</li>
+    </ul>
+
+    </p>
+    </div>
+</div>
+
+<div class="card" style="width: 500px;  margin: 50px;">
+    <div class="card-body">
+    <h5 class="card-title">Time</h5>
+    <p class="card-text">
+    <ul class="list-group list-group-flush">
+    <li class="list-group-item">Current UTC Time: {{data["current_time_utc"]}}</li>
+    <li class="list-group-item">Current Local Time: {{data["current_time_local"]}}</li>
+    <li class="list-group-item">Initial Start: {{data["initial_start"]}}</li>
+    <li class="list-group-item">Last Signal: {{data["last_timer"]}}</li>
+    </ul>
+    </p>
+    </div>
+</div>
+
+<div class="card" style="width: 500px; margin: 50px;">
+    <div class="card-body">
+    <h5 class="card-title">Timers</h5>
+    <p class="card-text">
+
+    <ul class="list-group list-group-flush">
+    <li class="list-group-item">Time to next alarm: {{data["time_to_alarm"]}}</li>
+    <li class="list-group-item">Time to next alarm (s): {{data["times_to_alarm"]}}</li>
+    <li class="list-group-item">Alarm Times (UTC): {{data["alarm_times_utc"]}}</li>
+    </ul>
+    </p>
+    </div>
+</div>
+
+<div class="card" style="width: 500px; margin: 50px;">
+    <div class="card-body">
+    <h5 class="card-title">Alarm Times (UTC)</h5>
+    <p class="card-text">
+
+    <ul class="list-group list-group-flush">
+	    {% for alarm in data["alarm_times_utc"] %}
+	    <li class="list-group-item">{{alarm|join(':')}}  <a class="btn btn-primary" href="./delete-alarm/{{alarm[0]}}/{{alarm[1]}}" role="button">Delete</a></li>
+	    {% endfor %}
+	    <li class="list-group-item"> <form action="./add-alarm" method="POST">
+
+<div class="input-group flex-nowrap">
+  <span class="input-group-text" id="addon-wrapping">HH</span>
+  <input type="text" class="form-control" placeholder="Hours" aria-label="hours" name="hours" aria-describedby="addon-wrapping">
+</div>
+<div class="input-group flex-nowrap">
+  <span class="input-group-text" id="addon-wrapping">MM</span>
+  <input type="text" class="form-control" placeholder="Minutes" aria-label="minutes" name="minutes" aria-describedby="addon-wrapping">
+</div>
+    <button type="submit" class="btn btn-primary mb-3">Add Alarm</button>
+</form> </li>
+    </ul>
+    </p>
+    </div>
+</div>
+
+
+
+</div>
+
+
+	
+</body>
+
+
+</html>
