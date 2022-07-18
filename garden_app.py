@@ -69,12 +69,12 @@ def timezone():
 @app.route("/sleepMin", methods=["GET"])
 def sleepMin():
     cdata = get_current_data()
-    return cdata.get("sleep_min", 15)
+    return str(cdata.get("sleep_min", 15))
 
 @app.route("/waterMin", methods=["GET"])
 def waterMin():
     cdata = get_current_data()
-    return cdata.get("water_min", 15)
+    return str(cdata.get("water_min", 15))
 
 
 @app.route("/set-sleepMin", methods=["POST"])
