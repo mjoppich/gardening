@@ -39,7 +39,7 @@ def connectWIFI():
     password = 'Hu3Wireless'
 
     if station.isconnected():
-        return()
+        return
 
     station.connect(ssid, password)
 

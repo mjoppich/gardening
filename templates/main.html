@@ -34,6 +34,7 @@
     <li class="list-group-item">Humidity: {{data["humidity"]}}</li>
     <li class="list-group-item">Pressure: {{data["airpressure"]}}</li>
     <li class="list-group-item">Soil Moisture: {{data["soilmoisture"]}}</li>
+    <li class="list-group-item">PUMP: {{data["gpio_state"]}}</li>
     </ul>
 
     </p>
@@ -49,6 +50,9 @@
     <li class="list-group-item">Current Local Time: {{data["current_time_local"]}}</li>
     <li class="list-group-item">Initial Start: {{data["initial_start"]}}</li>
     <li class="list-group-item">Last Signal: {{data["last_timer"]}}</li>
+
+    <li class="list-group-item">Last Watering Start: {{data["watering_start"]}}</li>
+    
     </ul>
     </p>
     </div>
@@ -94,7 +98,43 @@
     </div>
 </div>
 
+<div class="card" style="width: 500px; margin: 50px;">
+    <div class="card-body">
+    <h5 class="card-title">Water Time</h5>
+    <p class="card-text">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Water Time: {{data["water_min"]}}</li>
+        </ul>
+        <form action="./set-waterMin" method="POST">
+        <div class="input-group flex-nowrap">
+            <span class="input-group-text" id="addon-wrapping">MM</span>
+            <input type="text" class="form-control" placeholder="Minutes" aria-label="minutes" name="minutes" aria-describedby="addon-wrapping">
+        </div>
+        <button type="submit" class="btn btn-primary mb-3">Set Water Time</button>
+    </form>
+    </p>
+    </div>
+</div>
 
+
+
+<div class="card" style="width: 500px; margin: 50px;">
+    <div class="card-body">
+    <h5 class="card-title">Sleep Time</h5>
+    <p class="card-text">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Sleep Time: {{data["sleep_min"]}}</li>
+        </ul>
+        <form action="./set-sleepMin" method="POST">
+        <div class="input-group flex-nowrap">
+            <span class="input-group-text" id="addon-wrapping">MM</span>
+            <input type="text" class="form-control" placeholder="Minutes" aria-label="minutes" name="minutes" aria-describedby="addon-wrapping">
+        </div>
+        <button type="submit" class="btn btn-primary mb-3">Set Sleep Time</button>
+    </form>
+    </p>
+    </div>
+</div>
 
 </div>
 

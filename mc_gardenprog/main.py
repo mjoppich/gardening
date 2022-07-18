@@ -45,13 +45,14 @@ def timingFunction():
     global lastTimer
     global initialStart
     global pumpEndTime
+    global waterMin
 
     currentTimer = time.gmtime()
     currentTimerSeconds = dateToSeconds(currentTimer)
     lastTimerSeconds = dateToSeconds(lastTimer)
 
     lastTimer = currentTimer
-    waterTime = 15 * 60
+    waterTime = waterMin * 60
 
     for alarmSecond in alarmSeconds:
 
@@ -71,7 +72,7 @@ def wateringTime( pumpEndTime ):
 
     return False
 
-def collectSendData(temp, hum, pres, timestamp, moisture):
+def collectSendData(temp, hum, pres, timestamp, moisture, watering_start=False, post_data=True):
     global lastTimer
     global initialStart
     global nextPumping
@@ -79,6 +80,10 @@ def collectSendData(temp, hum, pres, timestamp, moisture):
     global alarmSeconds
     global timeZone
     global led
+
+    connectWIFI()
+
+    curGMTime = time.gmtime()
 
     if led.value() == 1:
         gpio_state = "ON"
@@ -93,15 +98,22 @@ def collectSendData(temp, hum, pres, timestamp, moisture):
     sendData["soilmoisture"] = moisture
     sendData["timezone"] = timeZone
 
+    if watering_start:
+        sendData["watering_start"] = seconds2hms(dateToSeconds(curGMTime), timeZone)
+
     sendData["last_timer"] = seconds2hms(dateToSeconds(lastTimer), timeZone)
     sendData["initial_start"] = dateToDateStr(initialStart) + " " + seconds2hms(dateToSeconds(initialStart))
     #sendData["alarm_times_utc"] = tuple([seconds2hms(x) for x in alarmSeconds])
     #sendData["alarm_times_local"] = tuple([seconds2hms(x, timeZone) for x in alarmSeconds])
 
-    sendData["current_time_utc"] = seconds2hms(dateToSeconds(time.gmtime()))
-    sendData["current_time_local"] = seconds2hms(dateToSeconds(time.gmtime()), timeZone)
-    sendData["time_to_alarm"] = tuple([seconds2hms(x - dateToSeconds(time.gmtime()), 0) for x in alarmSeconds])
-    sendData["times_to_alarm"] = tuple([x - dateToSeconds(time.gmtime()) for x in alarmSeconds])
+    sendData["current_time_utc"] = seconds2hms(dateToSeconds(curGMTime))
+    sendData["current_time_local"] = seconds2hms(dateToSeconds(curGMTime), timeZone)
+    sendData["time_to_alarm"] = tuple([seconds2hms(x - dateToSeconds(curGMTime), 0) for x in alarmSeconds])
+    sendData["times_to_alarm"] = tuple([x - dateToSeconds(curGMTime) for x in alarmSeconds])
+
+    if post_data:
+        headers = {'Content-Type': 'application/json'}
+        response = urequests.post("http://garden.compbio.cc/send", json=sendData, headers=headers)
 
     return sendData
 
@@ -117,12 +129,19 @@ csms = CSMS(adc, 600, 240)
 initialStart = time.gmtime()
 lastTimer = time.gmtime()
 pumpEndTime = 0
+waterMin = 0
 
 response = urequests.get("http://garden.compbio.cc/water_times")
 alarm = json.loads(response.text)
 
 response = urequests.get("http://garden.compbio.cc/timezone")
 timeZone = int(response.text)
+
+response = urequests.get("http://garden.compbio.cc/sleepMin")
+sleepMin = int(response.text)
+
+response = urequests.get("http://garden.compbio.cc/waterMin")
+waterMin = int(response.text)
 
 
 #alarm = [[7, 0], [19, 0]]
@@ -148,10 +167,7 @@ pres = bme.pressure
 csms_raw = csms.read(10)
 
 pumpMode = timingFunction()
-sendData = collectSendData(temp, hum, pres, str(dateTuple), csms_raw)
-
-headers = {'Content-Type': 'application/json'}
-response = urequests.post("http://garden.compbio.cc/send", json=sendData, headers=headers)
+sendData = collectSendData(temp, hum, pres, str(dateTuple), csms_raw, watering_start=False)
 led.value(1)
 
 sleepMin = 15
@@ -164,11 +180,16 @@ else:
     led.value(0)
     pump_on()
 
+    collectSendData(temp, hum, pres, str(dateTuple), csms_raw, watering_start=True)
+
     while pumpMode == True:
         time.sleep(30)
         pumpMode = wateringTime(pumpEndTime)
-        sendData = collectSendData(temp, hum, pres, str(dateTuple), csms_raw)
+        collectSendData(temp, hum, pres, str(dateTuple), csms_raw, watering_start=False)
 
     pump_off()
     led.value(1)
+
+    collectSendData(temp, hum, pres, str(dateTuple), csms_raw, watering_start=False)
+
     deep_sleep(sleepTime)

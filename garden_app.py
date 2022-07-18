@@ -66,6 +66,48 @@ def timezone():
     return "2"
 
 
+@app.route("/timezone", methods=["GET"])
+def timezone():
+    return "2"
+
+@app.route("/sleepMin", methods=["GET"])
+def timezone():
+    cdata = get_current_data()
+    return cdata.get("sleep_min", 15)
+
+@app.route("/waterMin", methods=["GET"])
+def timezone():
+    cdata = get_current_data()
+    return cdata.get("water_min", 15)
+
+
+@app.route("/set-sleepMin", methods=["POST"])
+@auth.login_required
+def setSleepMin():
+    minutes = int(request.form["minutes"])
+
+    cdata = get_current_data()
+
+    cdata["sleep_min"] = minutes
+    with open("current_data.json", "w") as fout:
+        json.dump(cdata, fout)
+
+    return redirect("/", 302)
+
+@app.route("/set-waterMin", methods=["POST"])
+@auth.login_required
+def setWaterMin():
+    minutes = int(request.form["minutes"])
+
+    cdata = get_current_data()
+
+    cdata["water_min"] = minutes
+    with open("current_data.json", "w") as fout:
+        json.dump(cdata, fout)
+
+    return redirect("/", 302)
+
+
 @app.route("/water_times", methods=["GET"])
 def water_times():
 
