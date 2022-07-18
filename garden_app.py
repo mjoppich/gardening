@@ -66,17 +66,13 @@ def timezone():
     return "2"
 
 
-@app.route("/timezone", methods=["GET"])
-def timezone():
-    return "2"
-
 @app.route("/sleepMin", methods=["GET"])
-def timezone():
+def sleepMin():
     cdata = get_current_data()
     return cdata.get("sleep_min", 15)
 
 @app.route("/waterMin", methods=["GET"])
-def timezone():
+def waterMin():
     cdata = get_current_data()
     return cdata.get("water_min", 15)
 
