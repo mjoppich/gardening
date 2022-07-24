@@ -10,6 +10,8 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 <!-- JavaScript Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+
+<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script></head>
 </head>
 
 <body>
@@ -46,14 +48,15 @@
     <h5 class="card-title">Time</h5>
     <p class="card-text">
     <ul class="list-group list-group-flush">
-    <li class="list-group-item">Current UTC Time: {{data["current_time_utc"]}}</li>
-    <li class="list-group-item">Current Local Time: {{data["current_time_local"]}}</li>
-    <li class="list-group-item">Initial Start: {{data["initial_start"]}}</li>
-    <li class="list-group-item">Last Signal: {{data["last_timer"]}}</li>
-
-    <li class="list-group-item">Last Watering Start: {{data["watering_start"]}}</li>
+    <li class="list-group-item">Current UTC Time: {{ render_time(data["current_time_utc"]) }}</li>
+    <li class="list-group-item">Current Local Time: {{render_time(data["current_time_local"]) }}</li>
+    <li class="list-group-item">Last Signal: {{render_time(data["last_timer"]) }}</li>
+    <li class="list-group-item">Last Watering Start: {{render_time(data["last_watering"]) }}</li>
     
     </ul>
+    </p>
+    <p>
+        <div id="chartContainer" style="height: 300px; width: 100%;"></div>
     </p>
     </div>
 </div>
@@ -64,9 +67,8 @@
     <p class="card-text">
 
     <ul class="list-group list-group-flush">
-    <li class="list-group-item">Time to next alarm: {{data["time_to_alarm"]}}</li>
-    <li class="list-group-item">Time to next alarm (s): {{data["times_to_alarm"]}}</li>
-    <li class="list-group-item">Alarm Times (UTC): {{data["alarm_times_utc"]}}</li>
+    <li class="list-group-item">Time to next alarm: {{render_times(data["time_to_alarm"]) }}</li>
+    <li class="list-group-item">Alarm Times (UTC): {{render_times(data["alarm_times_utc"]) }}</li>
     </ul>
     </p>
     </div>
@@ -138,6 +140,33 @@
 
 </div>
 
+
+<script type="text/javascript">
+    window.onload = function () {
+      var chart = new CanvasJS.Chart("chartContainer",
+      {
+  
+        title:{
+        text: "Earthquakes - per month"
+        },
+         data: [
+        {
+          type: "line",
+  
+          dataPoints: [
+
+          {% for tp in data["temperatures"] %}
+            {x: tp[0], y: tp[1]},
+          {% endfor %}
+          
+          ]
+        }
+        ]
+      });
+  
+      chart.render();
+    }
+    </script>
 
 	
 </body>

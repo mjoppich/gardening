@@ -4,7 +4,7 @@ try:
 except:
   import socket
 
-from machine import Pin
+from machine import Pin, reset
 import network
 import ntptime
 import esp
@@ -42,15 +42,14 @@ def connectWIFI():
         return
 
     station.connect(ssid, password)
-
     while station.isconnected() == False:
         pass
 
 
-
-connectWIFI()
-print(station.ifconfig())
-ntptime.settime()
+try:
+    connectWIFI()
+except:
+    reset()
 
 
 led.value(0)

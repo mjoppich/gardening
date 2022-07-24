@@ -6,84 +6,9 @@ import time
 import urequests
 import json
 
-def dateToSeconds(indate):
-    x = (indate[3], indate[4], indate[5])
-    x = x[0] * 60 * 60 + x[1] * 60 + x[2]
-    return x
 
-def dateToDateStr(indate):
-    year, month, mday = (indate[0], indate[1], indate[2])
-    return "{}/{}/{}".format(year, month, mday)
-
-def tupleToSeconds(intuple):
-    if len(intuple) > 2:
-        secs = intuple[2]
-    else:
-        secs = 0
-    return intuple[0] * 60 * 60 + intuple[1] * 60 + secs
-
-def hmsToSeconds(intuple):
-    return tupleToSeconds([int(x) for x in intuple.split(":")])
-
-def seconds2hms(seconds, timeZone=0):
-    sign = -1 if seconds < 0 else 1
-    seconds = abs(seconds)
-
-    minutes = seconds // 60
-    hours = minutes // 60
-
-    if (sign*hours)+timeZone >= 0:
-        hours = ((sign*hours)+timeZone) % 24
-    else:
-        hours = (sign*hours)+timeZone
-
-    return "{:>02}:{:>02}:{:>02}".format(hours, minutes % 60, seconds % 60)
-
-
-def timingFunction():
-
-    global lastTimer
-    global initialStart
-    global pumpEndTime
-    global waterMin
-
-    currentTimer = time.gmtime()
-    currentTimerSeconds = dateToSeconds(currentTimer)
-    lastTimerSeconds = dateToSeconds(lastTimer)
-
-    lastTimer = currentTimer
-    waterTime = waterMin * 60
-
-    for alarmSecond in alarmSeconds:
-
-        if alarmSecond <= currentTimerSeconds <= alarmSecond+waterTime:
-            pumpEndTime = currentTimerSeconds + waterTime
-            return True
-
-    return False
-
-def wateringTime( pumpEndTime ):
-
-    currentTimer = time.gmtime()
-    currentTimerSeconds = dateToSeconds(currentTimer)
-
-    if currentTimerSeconds <= pumpEndTime:
-        return True
-
-    return False
-
-def collectSendData(temp, hum, pres, timestamp, moisture, watering_start=False, post_data=True):
-    global lastTimer
-    global initialStart
-    global nextPumping
-    global nextPumpingOut
-    global alarmSeconds
-    global timeZone
+def collectSendData(temp, hum, pres, moisture, watering=False, post_data=True):
     global led
-
-    connectWIFI()
-
-    curGMTime = time.gmtime()
 
     if led.value() == 1:
         gpio_state = "ON"
@@ -96,24 +21,19 @@ def collectSendData(temp, hum, pres, timestamp, moisture, watering_start=False, 
     sendData["humidity"] = hum
     sendData["airpressure"] = pres
     sendData["soilmoisture"] = moisture
-    sendData["timezone"] = timeZone
 
-    if watering_start:
-        sendData["watering_start"] = seconds2hms(dateToSeconds(curGMTime), timeZone)
-
-    sendData["last_timer"] = seconds2hms(dateToSeconds(lastTimer), timeZone)
-    sendData["initial_start"] = dateToDateStr(initialStart) + " " + seconds2hms(dateToSeconds(initialStart))
-    #sendData["alarm_times_utc"] = tuple([seconds2hms(x) for x in alarmSeconds])
-    #sendData["alarm_times_local"] = tuple([seconds2hms(x, timeZone) for x in alarmSeconds])
-
-    sendData["current_time_utc"] = seconds2hms(dateToSeconds(curGMTime))
-    sendData["current_time_local"] = seconds2hms(dateToSeconds(curGMTime), timeZone)
-    sendData["time_to_alarm"] = tuple([seconds2hms(x - dateToSeconds(curGMTime), 0) for x in alarmSeconds])
-    sendData["times_to_alarm"] = tuple([x - dateToSeconds(curGMTime) for x in alarmSeconds])
+    if watering:
+        sendData["watering"] = 1
 
     if post_data:
-        headers = {'Content-Type': 'application/json'}
-        response = urequests.post("http://garden.compbio.cc/send", json=sendData, headers=headers)
+
+        try:
+            connectWIFI()
+
+            headers = {'Content-Type': 'application/json'}
+            response = urequests.post("http://garden.compbio.cc/send", json=sendData, headers=headers)
+        except:
+            machine.reset()
 
     return sendData
 
@@ -131,21 +51,15 @@ lastTimer = time.gmtime()
 pumpEndTime = 0
 waterMin = 0
 
-response = urequests.get("http://garden.compbio.cc/water_times")
-alarm = json.loads(response.text)
-
-response = urequests.get("http://garden.compbio.cc/timezone")
-timeZone = int(response.text)
-
 response = urequests.get("http://garden.compbio.cc/sleepMin")
 sleepMin = int(response.text)
 
 response = urequests.get("http://garden.compbio.cc/waterMin")
 waterMin = int(response.text)
 
+response = urequests.get("http://garden.compbio.cc/start_watering")
+startWatering = int(response.text)
 
-#alarm = [[7, 0], [19, 0]]
-alarmSeconds = [tupleToSeconds(x) for x in alarm]
 
 def deep_sleep(secs):
     # configure RTC.ALARM0 to be able to wake the device
@@ -157,8 +71,6 @@ def deep_sleep(secs):
     machine.deepsleep()
 
 
-led.value(0)
-dateTuple = time.gmtime()
 
 bme = bme280.BME280(i2c=i2c)
 temp = bme.temperature
@@ -166,30 +78,29 @@ hum = bme.humidity
 pres = bme.pressure
 csms_raw = csms.read(10)
 
-pumpMode = timingFunction()
-sendData = collectSendData(temp, hum, pres, str(dateTuple), csms_raw, watering_start=False)
+led.value(0)
+
+sendData = collectSendData(temp, hum, pres, csms_raw)
+#led off
 led.value(1)
 
-sleepMin = 15
 sleepTime = sleepMin * 60
 
-if not pumpMode:
+if not startWatering:
     deep_sleep(sleepTime)
 
 else:
     led.value(0)
     pump_on()
 
-    collectSendData(temp, hum, pres, str(dateTuple), csms_raw, watering_start=True)
+    collectSendData(temp, hum, pres, csms_raw, watering=True)
 
     while pumpMode == True:
         time.sleep(30)
         pumpMode = wateringTime(pumpEndTime)
-        collectSendData(temp, hum, pres, str(dateTuple), csms_raw, watering_start=False)
+        collectSendData(temp, hum, pres, csms_raw)
 
     pump_off()
     led.value(1)
-
-    collectSendData(temp, hum, pres, str(dateTuple), csms_raw, watering_start=False)
 
     deep_sleep(sleepTime)
