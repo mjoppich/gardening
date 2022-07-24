@@ -156,7 +156,7 @@ def get_time_to_alarm( timer, reftime ) :
     seconds = get_seconds_to_alarm(timer, reftime)
 
 
-    return (datetime(1,1,1)+timedelta(seconds)).strftime('%H:%M')
+    return (datetime(1,1,1)+timedelta(seconds=seconds)).strftime('%H:%M')
 
 
 @app.route("/send", methods=["POST"])
