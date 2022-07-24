@@ -154,7 +154,7 @@ def get_seconds_to_alarm( timer, reftime=None ):
 def get_time_to_alarm( timer, reftime ) :
 
     seconds = get_seconds_to_alarm(timer, reftime)
-    return timedelta(seconds)
+    return str(timedelta(seconds))
 
 
 @app.route("/send", methods=["POST"])
