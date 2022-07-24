@@ -145,10 +145,13 @@
     window.onload = function () {
       var chart = new CanvasJS.Chart("chartContainer",
       {
-  
+        zoomEnabled: true,
         title:{
-        text: "Temperature"
+        text: "Temperature at Location"
         },
+        axisY:{
+        title: "Temperature °C"
+       },
          data: [
         {
           type: "area",
