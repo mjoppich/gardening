@@ -145,9 +145,9 @@ def start_watering():
                 seconds_to_lasttimer = get_seconds_to_alarm(timer, inData["last_timer"])
                 seconds_to_now = get_seconds_to_alarm(timer, get_utc_seconds())
 
-                logging.warning("last timer: " + str(inData["last_timer"]))
-                logging.warning("seconds to last: " + str(seconds_to_lasttimer))
-                logging.warning("seconds to now: " + str(seconds_to_now))
+                #logging.warning("last timer: " + str(inData["last_timer"]))
+                #logging.warning("seconds to last: " + str(seconds_to_lasttimer))
+                #logging.warning("seconds to now: " + str(seconds_to_now))
 
                 if seconds_to_lasttimer > 0 and seconds_to_now < 0:
                     shouldWater = True
@@ -231,7 +231,7 @@ def update_current_time():
 def render_time(intime):
 
     if isinstance(intime, time.struct_time):
-        return time.strftime('%Y-%m-%dT%H:%M:%SZ', intime)
+        return time.strftime('%Y-%m-%dT%H:%M:%S', intime)
     elif isinstance(intime, (int, float)):
         time_event = datetime.fromtimestamp(intime)
         return time_event.strftime("%Y-%m-%d %H:%M:%S")
