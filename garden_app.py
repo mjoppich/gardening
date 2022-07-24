@@ -189,7 +189,7 @@ def send_data():
 
         cdata["last_timer"] = int(calendar.timegm( time.gmtime() ))
 
-        if int(rdata["watering"]) == 1:
+        if "watering" in rdata and int(rdata["watering"]) == 1:
             cdata["last_watering"] = int(calendar.timegm( time.gmtime() ))
 
 
