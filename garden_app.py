@@ -136,7 +136,7 @@ def start_watering():
         with open("current_data.json", "r") as fin:
             inData = json.load(fin)
 
-            shouldWater = True
+            shouldWater = False
 
             for timer in inData["alarm_times_utc"]:
 
