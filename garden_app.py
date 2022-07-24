@@ -145,6 +145,10 @@ def start_watering():
                 seconds_to_lasttimer = get_seconds_to_alarm(timer, inData["last_timer"])
                 seconds_to_now = get_seconds_to_alarm(timer, get_utc_seconds())
 
+                logging.info("last timer: " + str(inData["last_timer"]))
+                logging.info("seconds to last: " + str(seconds_to_lasttimer))
+                logging.info("seconds to now: " + str(seconds_to_now))
+
                 if seconds_to_lasttimer > 0 and seconds_to_now < 0:
                     shouldWater = True
 
