@@ -145,7 +145,7 @@
 
 const dataValues = [
 {% for tp in data["temperatures"] %}
-    {x: {{new Date(tp[0]}}000), y: {{tp[1]}}},
+    {x: new Date({{tp[0]}}000), y: {{tp[1]}}},
 {% endfor %}
 ];
 
