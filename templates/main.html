@@ -159,6 +159,14 @@ const dataValues = [
     }]
     },
     options: {
+        scales: {
+            y: {"text": "Temperature °C"},
+            x:  {
+                    "text": "Time",
+                    "type": "time",
+                    "time": {"unit": "hour"}
+                }
+        }
     }
   };
 
