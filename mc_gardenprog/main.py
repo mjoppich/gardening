@@ -31,7 +31,7 @@ def collectSendData(temp, hum, pres, moisture, watering=False, post_data=True):
             connectWIFI()
 
             headers = {'Content-Type': 'application/json'}
-            response = urequests.post("http://garden.compbio.cc/send", json=sendData, headers=headers)
+            response = urequests.post("http://garden.compbio.cc/send", json=sendData, headers=headers, timeout=5)
         except:
             machine.reset()
 
@@ -51,14 +51,20 @@ lastTimer = time.gmtime()
 pumpEndTime = 0
 waterMin = 0
 
-response = urequests.get("http://garden.compbio.cc/sleepMin")
-sleepMin = int(response.text)
+try:
+    response = urequests.get("http://garden.compbio.cc/sleepMin", timeout=5)
+    sleepMin = int(response.text)
+    response.close()
 
-response = urequests.get("http://garden.compbio.cc/waterMin")
-waterMin = int(response.text)
+    response = urequests.get("http://garden.compbio.cc/waterMin", timeout=5)
+    waterMin = int(response.text)
+    response.close()
 
-response = urequests.get("http://garden.compbio.cc/start_watering")
-startWatering = int(response.text)
+    response = urequests.get("http://garden.compbio.cc/start_watering", timeout=5)
+    startWatering = int(response.text)
+    response.close()
+except:
+    machine.reset()
 
 
 def deep_sleep(secs):

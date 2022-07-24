@@ -42,6 +42,8 @@ def verify_password(username, password):
 
 app = Flask(__name__)
 
+def get_current_data_path():
+    return os.path.basename(__file__) + "/current_data.json"
 
 @app.route("/add-alarm", methods=["POST"])
 @auth.login_required
@@ -52,7 +54,7 @@ def addalarm():
     cdata = get_current_data()
 
     cdata["alarm_times_utc"].append([hours, minutes])
-    with open("current_data.json", "w") as fout:
+    with open(get_current_data_path(), "w") as fout:
         json.dump(cdata, fout)
 
     return redirect("/", 302)
@@ -73,7 +75,7 @@ def delalarm(hours, minutes):
 
     cdata["alarm_times_utc"] = nalarms
 
-    with open("current_data.json", "w") as fout:
+    with open(get_current_data_path(), "w") as fout:
             json.dump(cdata, fout)
 
     return redirect("/", 302)
@@ -98,7 +100,7 @@ def setSleepMin():
     cdata = get_current_data()
 
     cdata["sleep_min"] = minutes
-    with open("current_data.json", "w") as fout:
+    with open(get_current_data_path(), "w") as fout:
         json.dump(cdata, fout)
 
     return redirect("/", 302)
@@ -111,7 +113,7 @@ def setWaterMin():
     cdata = get_current_data()
 
     cdata["water_min"] = minutes
-    with open("current_data.json", "w") as fout:
+    with open(get_current_data_path(), "w") as fout:
         json.dump(cdata, fout)
 
     return redirect("/", 302)
@@ -120,11 +122,8 @@ def setWaterMin():
 @app.route("/water_times", methods=["GET"])
 def water_times():
 
-    with open("current_data.json", "r") as fin:
-        inData = json.load(fin)
-        return jsonify(tuple(inData["alarm_times_utc"]))
-
-    return jsonify(tuple([]))
+    cdata = get_current_data()
+    return jsonify(tuple(cdata["alarm_times_utc"]))        
 
 def get_utc_seconds():
     return int(calendar.timegm(time.gmtime()))
@@ -133,27 +132,26 @@ def get_utc_seconds():
 def start_watering():
 
     try:
-        with open("current_data.json", "r") as fin:
-            inData = json.load(fin)
+        inData = get_current_data_path()
 
-            shouldWater = False
+        shouldWater = False
 
-            for timer in inData["alarm_times_utc"]:
+        for timer in inData["alarm_times_utc"]:
 
-                #if last_timer < alarm_time and alarm_time < now: start
+            #if last_timer < alarm_time and alarm_time < now: start
 
-                seconds_to_lasttimer = get_seconds_to_alarm(timer, inData["last_timer"])
-                seconds_to_now = get_seconds_to_alarm(timer, get_utc_seconds())
+            seconds_to_lasttimer = get_seconds_to_alarm(timer, inData["last_timer"])
+            seconds_to_now = get_seconds_to_alarm(timer, get_utc_seconds())
 
-                #logging.warning("last timer: " + str(inData["last_timer"]))
-                #logging.warning("seconds to last: " + str(seconds_to_lasttimer))
-                #logging.warning("seconds to now: " + str(seconds_to_now))
+            #logging.warning("last timer: " + str(inData["last_timer"]))
+            #logging.warning("seconds to last: " + str(seconds_to_lasttimer))
+            #logging.warning("seconds to now: " + str(seconds_to_now))
 
-                if seconds_to_lasttimer > 0 and seconds_to_now < 0:
-                    shouldWater = True
+            if seconds_to_lasttimer > 0 and seconds_to_now < 0:
+                shouldWater = True
 
-            if shouldWater:
-                return "1"
+        if shouldWater:
+            return "1"
             
 
     except:
@@ -213,7 +211,7 @@ def send_data():
             cdata["airpressures"] = cdata["airpressures"][-1000:]
 
 
-        with open(os.path.dirname(__file__) + "/current_data.json", "w") as fout:
+        with open(get_current_data_path(), "w") as fout:
             json.dump(cdata, fout)
 
             return "thanks"
@@ -225,7 +223,7 @@ def send_data():
 
 def get_current_data():
     try:
-        with open(os.path.dirname(__file__) + "/current_data.json", "r") as fin:
+        with open(get_current_data_path(), "r") as fin:
             inData = json.load(fin)
             return inData
     except:
@@ -239,7 +237,7 @@ def update_current_time():
     returnData["current_time_local"] = int(time.mktime( time.localtime() ))
     returnData["time_to_alarm"] = [ get_time_to_alarm(x, returnData["current_time_utc"]) for x in returnData["alarm_times_utc"] ]
 
-    with open("current_data.json", "w") as fout:
+    with open(get_current_data_path(), "w") as fout:
         json.dump(returnData, fout)
 
     return returnData
