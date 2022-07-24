@@ -6,7 +6,7 @@ import logging
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 import time, calendar
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 auth = HTTPBasicAuth()
 
@@ -154,7 +154,9 @@ def get_seconds_to_alarm( timer, reftime=None ):
 def get_time_to_alarm( timer, reftime ) :
 
     seconds = get_seconds_to_alarm(timer, reftime)
-    return str(timedelta(seconds))
+
+
+    return (datetime(1,1,1)+timedelta(seconds)).strftime('%H:%M')
 
 
 @app.route("/send", methods=["POST"])
@@ -209,14 +211,14 @@ def update_current_time():
 
     return returnData
 
-def render_time(x):
+def render_time(intime):
 
-    if isinstance(x, time.struct_time):
-        return time.asctime( x )
-    elif isinstance(x, (int, float)):
-        return time.asctime( time.gmtime(x) )
+    if isinstance(intime, time.struct_time):
+        return time.asctime( intime )
+    elif isinstance(intime, (int, float)):
+        return time.asctime( time.gmtime(intime) )
     else:
-        return ":".join(x)
+        return ":".join([str(x) for x in intime])
 
 def render_times(intimes):
 
