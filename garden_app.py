@@ -43,7 +43,7 @@ def verify_password(username, password):
 app = Flask(__name__)
 
 def get_current_data_path():
-    return os.path.basename(__file__) + "/current_data.json"
+    return os.path.dirname(__file__) + "/current_data.json"
 
 @app.route("/add-alarm", methods=["POST"])
 @auth.login_required
