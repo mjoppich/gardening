@@ -212,8 +212,9 @@ def update_current_time():
 def render_time(x):
 
     if isinstance(x, time.struct_time):
-        return time.asctime( time.localtime(time.time()) )
-
+        return time.asctime( x )
+    elif isinstance(x, (int, float)):
+        return time.asctime( time.gmtime(x) )
     else:
         return ":".join(x)
 
