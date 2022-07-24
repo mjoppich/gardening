@@ -228,6 +228,7 @@ def get_current_data():
             return inData
     except:
         logging.error("could not load current_data")
+        logging.error(get_current_data_path())
         return {}
 
 def update_current_time():
