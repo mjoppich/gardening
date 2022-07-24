@@ -231,6 +231,8 @@ def render_time(intime):
     elif isinstance(intime, (int, float)):
         time_event = datetime.fromtimestamp(intime)
         return time_event.strftime("%Y-%m-%d %H:%M:%S")
+    elif isinstance(intime, str):
+        return intime
     else:
         return ":".join([str(x) for x in intime])
 
