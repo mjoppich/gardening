@@ -1,6 +1,6 @@
 import json
 import os
-from flask import Flask, request, jsonify, render_template, redirect
+from flask import Flask, request, jsonify, render_template, redirect, send_from_directory
 import logging
 
 from flask_httpauth import HTTPBasicAuth
@@ -260,6 +260,11 @@ def render_times(intimes):
     alltimes = [render_time(x) for x in intimes]
     return ", ".join(alltimes)
 
+
+@app.route('/favicon.ico')
+@auth.login_required
+def favicon():
+    return send_from_directory("images", 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route("/")
 @auth.login_required
