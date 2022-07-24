@@ -11,7 +11,8 @@
 <!-- JavaScript Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 
-<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script></head>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
@@ -19,14 +20,14 @@
 	<div class="container .col-md-1 justify-content-center" style="padding: 100px; margin: 50px">
 
 
-<div class="card" style="width: 500px;  margin: 50px;">
+<div class="card" style="width: 750px;  margin: 50px;">
     <div class="card-body">
     <h5 class="card-title">GartenApp v1.0</h5>
     <p class="card-text">GartenApp</p>
     </div>
 </div>
 
-<div class="card" style="width: 500px; margin: 50px;">
+<div class="card" style="width: 750px; margin: 50px;">
     <div class="card-body">
     <h5 class="card-title">Weather</h5>
     <p class="card-text">
@@ -43,7 +44,7 @@
     </div>
 </div>
 
-<div class="card" style="width: 500px;  margin: 50px;">
+<div class="card" style="width: 750px;  margin: 50px;">
     <div class="card-body">
     <h5 class="card-title">Time</h5>
     <p class="card-text">
@@ -61,7 +62,7 @@
     </div>
 </div>
 
-<div class="card" style="width: 500px; margin: 50px;">
+<div class="card" style="width: 750px; margin: 50px;">
     <div class="card-body">
     <h5 class="card-title">Timers</h5>
     <p class="card-text">
@@ -74,7 +75,7 @@
     </div>
 </div>
 
-<div class="card" style="width: 500px; margin: 50px;">
+<div class="card" style="width: 750px; margin: 50px;">
     <div class="card-body">
     <h5 class="card-title">Alarm Times (UTC)</h5>
     <p class="card-text">
@@ -100,7 +101,7 @@
     </div>
 </div>
 
-<div class="card" style="width: 500px; margin: 50px;">
+<div class="card" style="width: 750px; margin: 50px;">
     <div class="card-body">
     <h5 class="card-title">Water Time</h5>
     <p class="card-text">
@@ -120,7 +121,7 @@
 
 
 
-<div class="card" style="width: 500px; margin: 50px;">
+<div class="card" style="width: 750px; margin: 50px;">
     <div class="card-body">
     <h5 class="card-title">Sleep Time</h5>
     <p class="card-text">
@@ -142,33 +143,40 @@
 
 
 <script type="text/javascript">
-    window.onload = function () {
-      var chart = new CanvasJS.Chart("chartContainer",
-      {
-        zoomEnabled: true,
-        title:{
-        text: "Temperature at Location"
-        },
-        axisY:{
-        title: "Temperature °C",
-        minimum: -10
-       },
-         data: [
-        {
-          type: "area",
-          xValueType: "dateTime",
-          dataPoints: [
 
-          {% for tp in data["temperatures"] %}
-            { x: {{tp[0]}}000, y: {{tp[1]}} },
-          {% endfor %}
-          
-          ]
-        }
-        ]
-      });
-  
-      chart.render();
+
+    window.onload = function () {
+
+        const labels = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+  ];
+
+  const data = {
+    labels: labels,
+    datasets: [{
+      label: 'My First dataset',
+      backgroundColor: 'rgb(255, 99, 132)',
+      borderColor: 'rgb(255, 99, 132)',
+      data: [0, 10, 5, 2, 20, 30, 45],
+    }]
+  };
+
+  const config = {
+    type: 'line',
+    data: data,
+    options: {}
+  };
+
+        const myChart = new Chart(
+        document.getElementById('chartContainer'),
+        config
+  );
+
     }
     </script>
 
