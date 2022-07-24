@@ -213,7 +213,7 @@ def send_data():
             cdata["airpressures"] = cdata["airpressures"][-1000:]
 
 
-        with open("current_data.json", "w") as fout:
+        with open(os.path.dirname(__file__) + "/current_data.json", "w") as fout:
             json.dump(cdata, fout)
 
             return "thanks"
@@ -225,7 +225,7 @@ def send_data():
 
 def get_current_data():
     try:
-        with open("current_data.json", "r") as fin:
+        with open(os.path.dirname(__file__) + "/current_data.json", "r") as fin:
             inData = json.load(fin)
             return inData
     except:
