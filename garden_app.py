@@ -3,7 +3,6 @@ import os
 from flask import Flask, request, jsonify, render_template, redirect
 import logging
 
-from numpy import isin
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 import time, calendar
