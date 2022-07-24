@@ -230,7 +230,8 @@ def render_time(intime):
     if isinstance(intime, time.struct_time):
         return time.asctime( intime )
     elif isinstance(intime, (int, float)):
-        return time.asctime( time.gmtime(intime) )
+        time_event = datetime.fromtimestamp(intime) + timedelta(seconds=0)
+        return time_event.strftime("%Y-%m-%d %H:%M:%S")
     else:
         return ":".join([str(x) for x in intime])
 
