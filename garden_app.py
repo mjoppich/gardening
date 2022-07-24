@@ -143,7 +143,7 @@ def start_watering():
     return "0"
 
 def get_seconds_to_alarm( timer, reftime=None ):
-    secondsAlarm = timer[0] * 60*60 + time[1] * 60
+    secondsAlarm = timer[0] * 60*60 + timer[1] * 60
 
     curTime = time.gmtime(reftime)
     secondsCur = curTime.tm_hour * 60 * 60 + curTime.tm_min * 60
