@@ -115,7 +115,7 @@ def get_utc_seconds():
     return int(calendar.timegm(time.gmtime()))
 
 @app.route("/start_watering", methods=["GET"])
-def water_times():
+def start_watering():
 
     try:
         with open("current_data.json", "r") as fin:
