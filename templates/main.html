@@ -143,29 +143,39 @@
 
 <script type="text/javascript">
 
-const labels = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-  ];
+const dataValues = [
+{% for tp in data["temperatures"] %}
+    {x: {{new Date(tp[0]}}000), y: {{tp[1]}}},
+{% endfor %}
+];
 
   const data = {
-    labels: labels,
+    labels: xvalues,
     datasets: [{
-      label: 'My First dataset',
+      label: 'Temperature',
       backgroundColor: 'rgb(255, 99, 132)',
       borderColor: 'rgb(255, 99, 132)',
-      data: [0, 10, 5, 2, 20, 30, 45],
+      data: yvalues,
     }]
   };
 
   const config = {
     type: 'line',
     data: data,
-    options: {}
+    options: {
+        scales: {
+            xAxes: [{
+                type: 'time',
+                time: {
+                unit: 'minute',
+                unitStepSize: 30,
+                displayFormats: {
+                    'minute': 'HH:mm'
+                }
+                }
+            }]
+        }
+    }
   };
 
 const myChart = new Chart(
