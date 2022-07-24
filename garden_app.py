@@ -169,7 +169,6 @@ def get_seconds_to_alarm( timer, reftime=None ):
 def get_time_to_alarm( timer, reftime ) :
 
     seconds = get_seconds_to_alarm(timer, reftime)
-
     return strfdelta(timedelta(0, seconds), '%H:%M:%S')
 
 
@@ -228,9 +227,9 @@ def update_current_time():
 def render_time(intime):
 
     if isinstance(intime, time.struct_time):
-        return time.asctime( intime )
+        return time.strftime('%Y-%m-%dT%H:%M:%SZ', intime)
     elif isinstance(intime, (int, float)):
-        time_event = datetime.fromtimestamp(intime) + timedelta(seconds=0)
+        time_event = datetime.fromtimestamp(intime)
         return time_event.strftime("%Y-%m-%d %H:%M:%S")
     else:
         return ":".join([str(x) for x in intime])
