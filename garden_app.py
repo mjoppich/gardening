@@ -8,6 +8,21 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import time, calendar
 from datetime import timedelta, datetime
 
+from string import Template
+
+class DeltaTemplate(Template):
+    delimiter = "%"
+
+def strfdelta(tdelta, fmt):
+    d = {"D": tdelta.days}
+    hours, rem = divmod(tdelta.seconds, 3600)
+    minutes, seconds = divmod(rem, 60)
+    d["H"] = '{:02d}'.format(hours)
+    d["M"] = '{:02d}'.format(minutes)
+    d["S"] = '{:02d}'.format(seconds)
+    t = DeltaTemplate(fmt)
+    return t.substitute(**d)
+
 auth = HTTPBasicAuth()
 
 users = {
@@ -155,8 +170,7 @@ def get_time_to_alarm( timer, reftime ) :
 
     seconds = get_seconds_to_alarm(timer, reftime)
 
-
-    return (datetime(1,1,1)+timedelta(seconds=seconds)).strftime('%H:%M')
+    return strfdelta(timedelta(0, seconds), '%H:%M:%S')
 
 
 @app.route("/send", methods=["POST"])
