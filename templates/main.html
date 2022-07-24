@@ -147,12 +147,12 @@
       {
   
         title:{
-        text: "Earthquakes - per month"
+        text: "Temperature"
         },
          data: [
         {
-          type: "line",
-  
+          type: "area",
+          xValueType: "dateTime",
           dataPoints: [
 
           {% for tp in data["temperatures"] %}
