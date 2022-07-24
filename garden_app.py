@@ -194,7 +194,8 @@ def get_current_data():
             inData = json.load(fin)
             return inData
     except:
-        return []
+        logging.error("could not load current_data")
+        return {}
 
 def update_current_time():
 
