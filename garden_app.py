@@ -192,10 +192,26 @@ def send_data():
         if "watering" in rdata and int(rdata["watering"]) == 1:
             cdata["last_watering"] = int(calendar.timegm( time.gmtime() ))
 
+        for x in ["temperatures", "soilmoistures", "humidities", "airpressures"]:
+            if not x in cdata:
+                cdata[x] = []
 
         cdata["temperatures"].append( (get_utc_seconds(), float((cdata["temp"][:-1])) ) )
         if len(cdata["temperatures"]) > 1000:
             cdata["temperatures"] = cdata["temperatures"][-1000:]
+
+        cdata["soilmoistures"].append( (get_utc_seconds(), float((cdata["soilmoisture"])) ) )
+        if len(cdata["soilmoistures"]) > 1000:
+            cdata["soilmoistures"] = cdata["soilmoistures"][-1000:]
+
+        cdata["humidities"].append( (get_utc_seconds(), float((cdata["humidity"][:-1])) ) )
+        if len(cdata["humidities"]) > 1000:
+            cdata["humidities"] = cdata["humidities"][-1000:]
+
+        cdata["airpressures"].append( (get_utc_seconds(), float((cdata["airpressure"][:-3])) ) )
+        if len(cdata["airpressures"]) > 1000:
+            cdata["airpressures"] = cdata["airpressures"][-1000:]
+
 
         with open("current_data.json", "w") as fout:
             json.dump(cdata, fout)

@@ -146,27 +146,61 @@
 
 <script type="text/javascript">
 
-const dataValues = [
+const tempValues = [
 {% for tp in data["temperatures"] %}
     {x: new Date({{tp[0]}}000), y: {{tp[1]}}},
 {% endfor %}
 ];
 
+const soilValues = [
+{% for tp in data["soilmoistures"] %}
+    {x: new Date({{tp[0]}}000), y: {{tp[1]}}},
+{% endfor %}
+];
+
+const humidValues = [
+{% for tp in data["humidities"] %}
+    {x: new Date({{tp[0]}}000), y: {{tp[1]}}},
+{% endfor %}
+];
+
+const airValues = [
+{% for tp in data["airpressures"] %}
+    {x: new Date({{tp[0]}}000), y: {{tp[1]}}},
+{% endfor %}
+];
 
 
   const config = {
     type: 'line',
     data: {
     datasets: [{
-        label: "Temperature",
-        data: dataValues,
+        label: "Temperature °C",
+        data: tempValues,
         borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+    },
+    {
+        label: "Soil Moisture (%)",
+        data: soilValues,
+        borderColor: 'rgb(75, 50, 192)',
+        tension: 0.1
+    },
+    {
+        label: "Humidity (%)",
+        data: humidValues,
+        borderColor: 'rgb(200, 50, 50)',
+        tension: 0.1
+    },
+    {
+        label: "Air Pressure (hPa)",
+        data: airValues,
+        borderColor: 'rgb(75, 150, 250)',
         tension: 0.1
     }]
     },
     options: {
         scales: {
-            y: {"text": "Temperature °C"},
             x:  {
                     "text": "Time",
                     "type": "time",

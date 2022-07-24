@@ -1,1 +1,1 @@
-{"water_min": 15, "sleep_min": 15, "alarm_times_utc": [[7, 0], [17, 0]], "gpio_state": "OFF", "temp": "24.91C", "last_timer": 0, "humidity": "40.16%", "airpressure": "953.55hPa", "soilmoisture": 100, "temperatures": []}
+{"water_min": 15, "sleep_min": 15, "alarm_times_utc": [[7, 0], [17, 0]], "gpio_state": "OFF", "temp": "24.91C", "last_timer": 0, "humidity": "40.16%", "airpressure": "953.55hPa", "soilmoisture": 100, "temperatures": [], "soilmoistures": [], "humidities": [], "airpressures": []}
