@@ -149,19 +149,15 @@ const dataValues = [
 {% endfor %}
 ];
 
-  const data = {
-    labels: xvalues,
-    datasets: [{
-      label: 'Temperature',
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgb(255, 99, 132)',
-      data: yvalues,
-    }]
-  };
+
 
   const config = {
     type: 'line',
-    data: data,
+    data: {
+    datasets: [{
+        data: dataValues
+    }]
+    },
     options: {
         scales: {
             xAxes: [{
