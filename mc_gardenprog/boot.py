@@ -6,7 +6,7 @@ except:
 
 from machine import Pin, reset
 import network
-import ntptime
+import time
 import esp
 esp.osdebug(None)
 
@@ -31,27 +31,19 @@ pump_off()
 
 led.value(1)
 
-station = network.WLAN(network.STA_IF)
-station.active(True)
-
 def connectWIFI():
-    ssid = 'Blubb24'
-    password = 'Hu3Wireless'
+    sta_if = network.WLAN(network.STA_IF)
+    if not sta_if.isconnected():
 
-    if station.isconnected():
-        return
-
-    station.connect(ssid, password)
-    while station.isconnected() == False:
-        pass
-
+        sta_if.active(True)
+        sta_if.connect('xxx', 'xxx')
+        while not sta_if.isconnected():
+            pass
 
 try:
     connectWIFI()
 except:
     reset()
 
-
 led.value(0)
-
-
+pump_off()
