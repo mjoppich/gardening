@@ -195,21 +195,23 @@ def send_data():
             if not x in cdata:
                 cdata[x] = []
 
+        histLength = 500
+
         cdata["temperatures"].append( (get_utc_seconds(), float((cdata["temp"][:-1])) ) )
-        if len(cdata["temperatures"]) > 1000:
-            cdata["temperatures"] = cdata["temperatures"][-1000:]
+        if len(cdata["temperatures"]) > histLength:
+            cdata["temperatures"] = cdata["temperatures"][-histLength:]
 
         cdata["soilmoistures"].append( (get_utc_seconds(), float((cdata["soilmoisture"])) ) )
-        if len(cdata["soilmoistures"]) > 1000:
-            cdata["soilmoistures"] = cdata["soilmoistures"][-1000:]
+        if len(cdata["soilmoistures"]) > histLength:
+            cdata["soilmoistures"] = cdata["soilmoistures"][-histLength:]
 
         cdata["humidities"].append( (get_utc_seconds(), float((cdata["humidity"][:-1])) ) )
-        if len(cdata["humidities"]) > 1000:
-            cdata["humidities"] = cdata["humidities"][-1000:]
+        if len(cdata["humidities"]) > histLength:
+            cdata["humidities"] = cdata["humidities"][-histLength:]
 
         cdata["airpressures"].append( (get_utc_seconds(), float((cdata["airpressure"][:-3])) ) )
-        if len(cdata["airpressures"]) > 1000:
-            cdata["airpressures"] = cdata["airpressures"][-1000:]
+        if len(cdata["airpressures"]) > histLength:
+            cdata["airpressures"] = cdata["airpressures"][-histLength:]
 
 
         with open(get_current_data_path(), "w") as fout:
